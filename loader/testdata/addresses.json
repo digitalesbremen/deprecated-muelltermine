@@ -1,0 +1,37 @@
+{
+  "Addresses": [
+    {
+      "Street": "Aachener Straße",
+      "HouseNumber": "2",
+      "CollectionDates": [
+        {
+          "Date": "2020-03-09",
+          "Types": [
+            "BLUE",
+            "YELLOW"
+          ]
+        },
+        {
+          "Date": "2020-03-16",
+          "Types": [
+            "BLACK",
+            "BROWN"
+          ]
+        }
+      ]
+    },
+    {
+      "Street": "Waiblinger Weg",
+      "HouseNumber": "33",
+      "CollectionDates": [
+        {
+          "Date": "2020-03-11",
+          "Types": [
+            "BLUE",
+            "YELLOW"
+          ]
+        }
+      ]
+    }
+  ]
+}
