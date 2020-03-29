@@ -8,14 +8,11 @@ func TestAddressLoader_LoadAddresses(t *testing.T) {
 	addressLoader := NewAddressLoader("testdata/addresses.json")
 	addresses, _ := addressLoader.LoadAddresses()
 
-	address1 := addresses[0]
-	address2 := addresses[1]
+	verifyStreet(t, `Aachener Straße`, addresses[0].Street)
+	verifyHouseNumber(t, `2`, addresses[0].HouseNumber)
 
-	verifyStreet(t, `Aachener Straße`, address1.Street)
-	verifyHouseNumber(t, `2`, address1.HouseNumber)
-
-	verifyStreet(t, `Waiblinger Weg`, address2.Street)
-	verifyHouseNumber(t, `33`, address2.HouseNumber)
+	verifyStreet(t, `Waiblinger Weg`, addresses[1].Street)
+	verifyHouseNumber(t, `33`, addresses[1].HouseNumber)
 }
 
 func verifyStreet(t *testing.T, want string, got string) {
