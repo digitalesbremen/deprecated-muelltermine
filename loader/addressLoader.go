@@ -38,12 +38,12 @@ func NewAddressLoader(filename string) *AddressLoader {
 	return &addressLoader
 }
 
-func (l *AddressLoader) LoadAddresses() (content Addresses, err error) {
+func (l *AddressLoader) LoadAddresses() (content []Address, err error) {
 	fmt.Println("Read file", l.FileName)
 	dat, err := ioutil.ReadFile(l.FileName)
 
 	if err != nil {
-		return Addresses{}, err
+		return []Address{}, err
 	}
 
 	var addresses Addresses
@@ -53,12 +53,12 @@ func (l *AddressLoader) LoadAddresses() (content Addresses, err error) {
 	err = json.Unmarshal(dat, &addresses)
 
 	if err != nil {
-		return Addresses{}, err
+		return []Address{}, err
 	}
 
 	fmt.Println("Addresses loaded:", len(addresses.Addresses))
 
-	return addresses, nil
+	return addresses.Addresses, nil
 }
 
 func (t *JSONTime) UnmarshalJSON(b []byte) error {
