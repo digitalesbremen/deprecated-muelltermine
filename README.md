@@ -8,6 +8,7 @@ Ein in [GO](https://golang.org/) entwickeltes Programm, welches die vom
 Bremer Adressen einliest und eine API sowie eine UI bereitsstellt.
 
 Die genauen Hintergründe für diese Anwendung ist auf [Digitales Bremen](https://digitalesbremen.github.io/) beschrieben. 
+Für diese Anwendung gibt es eine genauere Beschreibung im [Blog](https://github.com/digitalesbremen/digitalesbremen.github.io/blob/master/blog.md).
 
 ## Anforderungen
 
