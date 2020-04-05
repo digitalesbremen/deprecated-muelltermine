@@ -18,6 +18,32 @@ func TestAddressLoader_LoadAddresses(t *testing.T) {
 	verifyCollectionDatesDate(t, 1, 0, "2020-03-11", []string{"BLUE", "YELLOW"}, addresses[1].CollectionDates[0])
 }
 
+func TestAddressLoader_LoadAddressesWithFileIsNotValid(t *testing.T) {
+	addressLoader := NewAddressLoader("testdata/invalid.txt")
+	addresses, err := addressLoader.LoadAddresses()
+
+	if len(addresses) != 0 {
+		t.Errorf(`len(LoadAddresses()) = %d; want 0`, len(addresses))
+	}
+
+	if err == nil {
+		t.Errorf(`_, err = LoadAddresses()) == nil; want error`)
+	}
+}
+
+func TestAddressLoader_LoadAddressesWithFileIsNotFound(t *testing.T) {
+	addressLoader := NewAddressLoader("testdata/not.existing")
+	addresses, err := addressLoader.LoadAddresses()
+
+	if len(addresses) != 0 {
+		t.Errorf(`len(LoadAddresses()) = %d; want 0`, len(addresses))
+	}
+
+	if err == nil {
+		t.Errorf(`_, err = LoadAddresses()) == nil; want error`)
+	}
+}
+
 func verifyStreet(t *testing.T, addressIndex int, want string, got string) {
 	if want != got {
 		t.Errorf(`LoadAddresses()[%d].Street = %s; want %s`, addressIndex, got, want)
