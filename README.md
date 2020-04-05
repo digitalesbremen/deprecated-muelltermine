@@ -22,7 +22,7 @@ Das Projekt benötigt eine aktuelle Version von [GO](https://golang.org/) und ma
 ```ssh
 $ git clone https://github.com/digitalesbremen/muelltermine # Auschecken des Repositories
 $ make all                                                  # Bauen einer auf dem Hostsystem laufenden Anwendung
-$ ./muellsammler                                            # Starten der Anwendung
+$ ./muelltermine                                            # Starten der Anwendung
 ```
 
 ### Weitere make goals
