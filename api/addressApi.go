@@ -11,7 +11,7 @@ import (
 	"muelltermine/loader"
 )
 
-type Addresses struct {
+type AddressesDto struct {
 	Addresses []string `json:"addresses,nilasempty"`
 }
 
@@ -40,10 +40,9 @@ func NewAddressesApi(addresses []loader.Address, router *mux.Router) *AddressesA
 }
 
 func (a *AddressesApi) allAddressesHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	searchValue := vars["search"]
+	searchValue := mux.Vars(r)["search"]
 
-	var addresses Addresses
+	var addresses AddressesDto
 
 	for _, entry := range a.addresses {
 		fullQualifiedAddress := entry.Street + " " + entry.HouseNumber

@@ -32,7 +32,7 @@ func TestAddressApi_LoadAddresses(t *testing.T) {
 	NewAddressesApi(addresses, router)
 	router.ServeHTTP(res, req)
 
-	var dtos Addresses
+	var dtos AddressesDto
 
 	err := json.Unmarshal(res.Body.Bytes(), &dtos)
 
