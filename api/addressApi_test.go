@@ -7,8 +7,6 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-
-	"muelltermine/loader"
 )
 
 func TestAddressApi_LoadAddresses(t *testing.T) {
@@ -44,36 +42,5 @@ func TestAddressApi_LoadAddresses(t *testing.T) {
 
 	if dtos.Addresses[0] != "Langwedeler Straße 1" {
 		t.Errorf(`GET /api/address [0] = %s ; want %s`, dtos.Addresses[0], "Langwedeler Straße 1")
-	}
-}
-
-type AddressesBuilder struct {
-	addresses []loader.Address
-}
-
-func newAddressBuilder() AddressesBuilder {
-	return AddressesBuilder{addresses: []loader.Address{}}
-}
-
-func (b AddressesBuilder) withAddress(street string, houseNumber string) AddressesBuilder {
-	address := loader.Address{
-		Street:          street,
-		HouseNumber:     houseNumber,
-		CollectionDates: nil,
-	}
-
-	b.addresses = append(b.addresses, address)
-	return b
-}
-
-func (b AddressesBuilder) build() []loader.Address {
-	return b.addresses
-}
-
-func buildAddress(street string, houseNumber string) loader.Address {
-	return loader.Address{
-		Street:          street,
-		HouseNumber:     houseNumber,
-		CollectionDates: nil,
 	}
 }
