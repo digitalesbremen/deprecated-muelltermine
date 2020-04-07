@@ -40,6 +40,10 @@ func TestAddressApi_LoadAddresses(t *testing.T) {
 		t.Errorf(`GET /api/address is no json: %s`, err.Error())
 	}
 
+	if len(dtos.Addresses) > 10 {
+		t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), 10)
+	}
+
 	if dtos.Addresses[0] != "Langwedeler Straße 1" {
 		t.Errorf(`GET /api/address [0] = %s ; want %s`, dtos.Addresses[0], "Langwedeler Straße 1")
 	}

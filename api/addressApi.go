@@ -46,14 +46,14 @@ func (a *AddressesApi) allAddressesHandler(w http.ResponseWriter, r *http.Reques
 	var addresses Addresses
 
 	for _, entry := range a.addresses {
-		if len(addresses.Addresses) > 10 {
-			break
-		}
-
 		fullQualifiedAddress := entry.Street + " " + entry.HouseNumber
 
 		if containsIgnoreCase(fullQualifiedAddress, searchValue) {
 			addresses.Addresses = append(addresses.Addresses, fullQualifiedAddress)
+		}
+
+		if len(addresses.Addresses) >= 10 {
+			break
 		}
 	}
 
