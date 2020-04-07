@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"muelltermine/api"
 	"muelltermine/loader"
 )
 
@@ -18,11 +19,11 @@ func printNow() {
 
 func main() {
 	printNow()
-	fmt.Println("Hello Golang!")
+	fmt.Println("Hello Muelltermine!")
 
 	addressLoader := loader.NewAddressLoader("data.json")
 
-	_, err := addressLoader.LoadAddresses()
+	addresses, err := addressLoader.LoadAddresses()
 
 	if err != nil {
 		panic(err)
@@ -31,12 +32,8 @@ func main() {
 	printNow()
 
 	router := mux.NewRouter()
-	router.HandleFunc("/api/address", ExampleHandler).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8080", router))
-}
 
-func ExampleHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusOK)
-	_, _ = fmt.Fprintf(w, "Category: %v\n", vars["category"])
+	api.NewAddressesApi(addresses, router)
+
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
