@@ -44,7 +44,20 @@ func TestAddressApi_LoadAddresses(t *testing.T) {
 		t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), 10)
 	}
 
-	if dtos.Addresses[0] != "Langwedeler Straße 1" {
-		t.Errorf(`GET /api/address [0] = %s ; want %s`, dtos.Addresses[0], "Langwedeler Straße 1")
+	verifyAddress(t, 0, "Langwedeler Straße 1", dtos.Addresses[0])
+	verifyAddress(t, 1, "Langwedeler Straße 1a", dtos.Addresses[1])
+	verifyAddress(t, 2, "Langwedeler Straße 1b", dtos.Addresses[2])
+	verifyAddress(t, 3, "Langwedeler Straße 2", dtos.Addresses[3])
+	verifyAddress(t, 4, "Langwedeler Straße 3", dtos.Addresses[4])
+	verifyAddress(t, 5, "Langwedeler Straße 3a", dtos.Addresses[5])
+	verifyAddress(t, 6, "Langwedeler Straße 5", dtos.Addresses[6])
+	verifyAddress(t, 7, "Langwedeler Straße 5a", dtos.Addresses[7])
+	verifyAddress(t, 8, "Langwedeler Straße 5b", dtos.Addresses[8])
+	verifyAddress(t, 9, "Zwoller Straße 38", dtos.Addresses[9])
+}
+
+func verifyAddress(t *testing.T, index int, got string, want string) {
+	if want != got {
+		t.Errorf(`GET /api/address [%d] = %s ; want %s`, index, got, want)
 	}
 }
