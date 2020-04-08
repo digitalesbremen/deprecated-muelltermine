@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -44,16 +45,29 @@ func TestAddressApi_LoadAddresses(t *testing.T) {
 		t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), 10)
 	}
 
-	verifyAddress(t, 0, "Langwedeler Straße 1", dtos.Addresses[0])
-	verifyAddress(t, 1, "Langwedeler Straße 1a", dtos.Addresses[1])
-	verifyAddress(t, 2, "Langwedeler Straße 1b", dtos.Addresses[2])
-	verifyAddress(t, 3, "Langwedeler Straße 2", dtos.Addresses[3])
-	verifyAddress(t, 4, "Langwedeler Straße 3", dtos.Addresses[4])
-	verifyAddress(t, 5, "Langwedeler Straße 3a", dtos.Addresses[5])
-	verifyAddress(t, 6, "Langwedeler Straße 5", dtos.Addresses[6])
-	verifyAddress(t, 7, "Langwedeler Straße 5a", dtos.Addresses[7])
-	verifyAddress(t, 8, "Langwedeler Straße 5b", dtos.Addresses[8])
-	verifyAddress(t, 9, "Zwoller Straße 38", dtos.Addresses[9])
+	tests := []struct {
+		index int
+		got   string
+		want  string
+	}{
+		{0, "Langwedeler Straße 1", dtos.Addresses[0]},
+		{1, "Langwedeler Straße 1a", dtos.Addresses[1]},
+		{2, "Langwedeler Straße 1b", dtos.Addresses[2]},
+		{3, "Langwedeler Straße 2", dtos.Addresses[3]},
+		{4, "Langwedeler Straße 3", dtos.Addresses[4]},
+		{5, "Langwedeler Straße 3a", dtos.Addresses[5]},
+		{6, "Langwedeler Straße 5", dtos.Addresses[6]},
+		{7, "Langwedeler Straße 5a", dtos.Addresses[7]},
+		{8, "Langwedeler Straße 5b", dtos.Addresses[8]},
+		{9, "Zwoller Straße 38", dtos.Addresses[9]},
+	}
+
+	for _, tt := range tests {
+		name := "GET /api/address [" + strconv.Itoa(tt.index) + "]"
+		t.Run(name, func(t *testing.T) {
+			verifyAddress(t, tt.index, tt.got, tt.want)
+		})
+	}
 }
 
 func verifyAddress(t *testing.T, index int, got string, want string) {
