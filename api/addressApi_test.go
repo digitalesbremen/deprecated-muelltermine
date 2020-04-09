@@ -41,6 +41,10 @@ func TestAddressApi_LoadAddresses(t *testing.T) {
 		t.Errorf(`GET /api/address is no json: %s`, err.Error())
 	}
 
+	if res.Header().Get("Content-Type") != "application/json" {
+		t.Errorf(`GET /api/address header = %s ; want %s`, res.Header().Get("Content-Type"), "application/json")
+	}
+
 	if len(dtos.Addresses) > 10 {
 		t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), 10)
 	}
