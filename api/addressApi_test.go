@@ -37,17 +37,23 @@ func TestAddressApi_LoadAddresses(t *testing.T) {
 
 	err := json.Unmarshal(res.Body.Bytes(), &dtos)
 
-	if err != nil {
-		t.Errorf(`GET /api/address is no json: %s`, err.Error())
-	}
+	t.Run("verify response header", func(t *testing.T) {
+		if res.Header().Get("Content-Type") != "application/json" {
+			t.Errorf(`GET /api/address header = %s ; want %s`, res.Header().Get("Content-Type"), "application/json")
+		}
+	})
 
-	if res.Header().Get("Content-Type") != "application/json" {
-		t.Errorf(`GET /api/address header = %s ; want %s`, res.Header().Get("Content-Type"), "application/json")
-	}
+	t.Run("verify body is json", func(t *testing.T) {
+		if err != nil {
+			t.Errorf(`GET /api/address is no json: %s`, err.Error())
+		}
+	})
 
-	if len(dtos.Addresses) > 10 {
-		t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), 10)
-	}
+	t.Run("verify body addresses length", func(t *testing.T) {
+		if len(dtos.Addresses) > 10 {
+			t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), 10)
+		}
+	})
 
 	tests := []struct {
 		index int
