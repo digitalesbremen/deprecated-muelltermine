@@ -9,7 +9,7 @@ import (
 )
 
 type AddressLoader struct {
-	FileName string
+	fileName string
 }
 
 type JSONTime struct {
@@ -33,14 +33,14 @@ type GarbageCollectionDate struct {
 
 func NewAddressLoader(filename string) *AddressLoader {
 	addressLoader := AddressLoader{
-		FileName: filename,
+		fileName: filename,
 	}
 	return &addressLoader
 }
 
 func (l *AddressLoader) LoadAddresses() (content []Address, err error) {
-	fmt.Println("Read file", l.FileName)
-	dat, err := ioutil.ReadFile(l.FileName)
+	fmt.Println("Read file", l.fileName)
+	dat, err := ioutil.ReadFile(l.fileName)
 
 	if err != nil {
 		return []Address{}, err
@@ -48,7 +48,7 @@ func (l *AddressLoader) LoadAddresses() (content []Address, err error) {
 
 	var addresses Addresses
 
-	fmt.Println("Unmarshal addresses from file", l.FileName)
+	fmt.Println("Unmarshal addresses from file", l.fileName)
 
 	err = json.Unmarshal(dat, &addresses)
 
