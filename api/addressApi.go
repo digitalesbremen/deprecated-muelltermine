@@ -12,7 +12,7 @@ import (
 )
 
 type AddressesDto struct {
-	Addresses []string `json:"addresses,nilasempty"`
+	Addresses []string `json:"addresses"`
 }
 
 type AddressesApi struct {
