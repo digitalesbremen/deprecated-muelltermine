@@ -29,7 +29,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 	res, dtos := sendRequest(t, "/api/address")
 
 	verifyResponseHeader(t, res)
-	verifyAddressSize(t, dtos, 10)
+	verifyAddressesLength(t, dtos, 10)
 	verifyAddresses(t, []struct {
 		index int
 		got   string
@@ -52,7 +52,7 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 	res, dtos := sendRequest(t, "/api/address?search=zwolle")
 
 	verifyResponseHeader(t, res)
-	verifyAddressSize(t, dtos, 3)
+	verifyAddressesLength(t, dtos, 3)
 	verifyAddresses(t, []struct {
 		index int
 		got   string
@@ -68,7 +68,7 @@ func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
 	res, dtos := sendRequest(t, "/api/address?search=not-found")
 
 	verifyResponseHeader(t, res)
-	verifyAddressSize(t, dtos, 0)
+	verifyAddressesLength(t, dtos, 0)
 }
 
 func sendRequest(t *testing.T, url string) (*httptest.ResponseRecorder, AddressesDto) {
@@ -96,7 +96,7 @@ func verifyAddresses(t *testing.T, tests []struct {
 	}
 }
 
-func verifyAddressSize(t *testing.T, dtos AddressesDto, want int) bool {
+func verifyAddressesLength(t *testing.T, dtos AddressesDto, want int) bool {
 	return t.Run("verify body addresses length", func(t *testing.T) {
 		if len(dtos.Addresses) > 10 {
 			t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), want)
