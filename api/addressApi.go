@@ -45,10 +45,8 @@ func (a *AddressesApi) allAddressesHandler(w http.ResponseWriter, r *http.Reques
 	var addresses AddressesDto
 
 	for _, entry := range a.addresses {
-		fullQualifiedAddress := entry.Street + " " + entry.HouseNumber
-
-		if containsIgnoreCase(fullQualifiedAddress, searchValue) {
-			addresses.Addresses = append(addresses.Addresses, fullQualifiedAddress)
+		if containsIgnoreCase(entry.Street, searchValue) && !contains(addresses.Addresses, entry.Street) {
+			addresses.Addresses = append(addresses.Addresses, entry.Street)
 		}
 
 		if len(addresses.Addresses) >= 10 {
@@ -63,6 +61,15 @@ func (a *AddressesApi) allAddressesHandler(w http.ResponseWriter, r *http.Reques
 	} else {
 		_ = json.NewEncoder(w).Encode(addresses)
 	}
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
 }
 
 func containsIgnoreCase(s string, substring string) bool {

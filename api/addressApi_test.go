@@ -11,15 +11,18 @@ import (
 )
 
 var testAddresses = newAddressBuilder().
+	withAddress("Am Querkamp", "36").
 	withAddress("Langwedeler Straße", "1").
 	withAddress("Langwedeler Straße", "1a").
 	withAddress("Langwedeler Straße", "1b").
-	withAddress("Langwedeler Straße", "2").
-	withAddress("Langwedeler Straße", "3").
-	withAddress("Langwedeler Straße", "3a").
-	withAddress("Langwedeler Straße", "5").
-	withAddress("Langwedeler Straße", "5a").
-	withAddress("Langwedeler Straße", "5b").
+	withAddress("Riensberger Straße", "94").
+	withAddress("Schaffenrathstraße", "44").
+	withAddress("Schaffhauser Straße", "5").
+	withAddress("Steffensweg", "78").
+	withAddress("Turnerstraße", "295").
+	withAddress("Twiedelftsweg", "5").
+	withAddress("Voltastraße", "120").
+	withAddress("Von-Line-Straße", "4").
 	withAddress("Zwoller Straße", "38").
 	withAddress("Zwoller Straße", "40").
 	withAddress("Zwoller Straße", "42").
@@ -29,22 +32,22 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 	res, dtos := sendRequest(t, "/api/address")
 
 	verifyResponseHeader(t, res)
-	verifyAddressesLength(t, dtos, 10)
+	verifyAddressesLength(t, dtos, 2)
 	verifyAddresses(t, []struct {
 		index int
 		got   string
 		want  string
 	}{
-		{0, "Langwedeler Straße 1", dtos.Addresses[0]},
-		{1, "Langwedeler Straße 1a", dtos.Addresses[1]},
-		{2, "Langwedeler Straße 1b", dtos.Addresses[2]},
-		{3, "Langwedeler Straße 2", dtos.Addresses[3]},
-		{4, "Langwedeler Straße 3", dtos.Addresses[4]},
-		{5, "Langwedeler Straße 3a", dtos.Addresses[5]},
-		{6, "Langwedeler Straße 5", dtos.Addresses[6]},
-		{7, "Langwedeler Straße 5a", dtos.Addresses[7]},
-		{8, "Langwedeler Straße 5b", dtos.Addresses[8]},
-		{9, "Zwoller Straße 38", dtos.Addresses[9]},
+		{0, dtos.Addresses[0], "Am Querkamp"},
+		{1, dtos.Addresses[1], "Langwedeler Straße"},
+		{2, dtos.Addresses[2], "Riensberger Straße"},
+		{3, dtos.Addresses[3], "Schaffenrathstraße"},
+		{4, dtos.Addresses[4], "Schaffhauser Straße"},
+		{5, dtos.Addresses[5], "Steffensweg"},
+		{6, dtos.Addresses[6], "Turnerstraße"},
+		{7, dtos.Addresses[7], "Twiedelftsweg"},
+		{8, dtos.Addresses[8], "Voltastraße"},
+		{9, dtos.Addresses[9], "Von-Line-Straße"},
 	})
 }
 
@@ -52,15 +55,13 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 	res, dtos := sendRequest(t, "/api/address?search=zwolle")
 
 	verifyResponseHeader(t, res)
-	verifyAddressesLength(t, dtos, 3)
+	verifyAddressesLength(t, dtos, 1)
 	verifyAddresses(t, []struct {
 		index int
 		got   string
 		want  string
 	}{
-		{0, "Zwoller Straße 38", dtos.Addresses[0]},
-		{1, "Zwoller Straße 40", dtos.Addresses[1]},
-		{2, "Zwoller Straße 42", dtos.Addresses[2]},
+		{0, dtos.Addresses[0], "Zwoller Straße"},
 	})
 }
 
