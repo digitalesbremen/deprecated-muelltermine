@@ -29,7 +29,7 @@ var testAddresses = newAddressBuilder().
 	build()
 
 func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
-	res, dtos := sendGetStreetsRequest(t, "/api/address")
+	res, dtos := sendRequest(t, "/api/address")
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 2)
@@ -52,7 +52,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 }
 
 func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
-	res, dtos := sendGetStreetsRequest(t, "/api/address?search=zwolle")
+	res, dtos := sendRequest(t, "/api/address?search=zwolle")
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 1)
@@ -66,20 +66,20 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 }
 
 func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
-	res, dtos := sendGetStreetsRequest(t, "/api/address?search=not-found")
+	res, dtos := sendRequest(t, "/api/address?search=not-found")
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 0)
 }
 
 //func TestAddressApi_LoadHouseNumbers(t *testing.T) {
-//	res, dtos := sendGetStreetsRequest(t, "/api/address/Langwedeler%20Straße")
+//	res, dtos := sendRequest(t, "/api/address/Langwedeler%20Straße")
 //
 //	verifyResponseHeader(t, res)
 //	verifyAddressesLength(t, dtos, 0)
 //}
 
-func sendGetStreetsRequest(t *testing.T, url string) (*httptest.ResponseRecorder, StreetsDto) {
+func sendRequest(t *testing.T, url string) (*httptest.ResponseRecorder, StreetsDto) {
 	req, _ := http.NewRequest("GET", url, nil)
 	res := httptest.NewRecorder()
 
