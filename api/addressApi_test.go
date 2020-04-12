@@ -29,7 +29,7 @@ var testAddresses = newAddressBuilder().
 	build()
 
 func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
-	res, dtos := sendRequest(t, "/api/address")
+	res, dtos := sendGetStreetsRequest(t, "/api/address")
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 2)
@@ -38,21 +38,21 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 		got   string
 		want  string
 	}{
-		{0, dtos.Addresses[0], "Am Querkamp"},
-		{1, dtos.Addresses[1], "Langwedeler Straße"},
-		{2, dtos.Addresses[2], "Riensberger Straße"},
-		{3, dtos.Addresses[3], "Schaffenrathstraße"},
-		{4, dtos.Addresses[4], "Schaffhauser Straße"},
-		{5, dtos.Addresses[5], "Steffensweg"},
-		{6, dtos.Addresses[6], "Turnerstraße"},
-		{7, dtos.Addresses[7], "Twiedelftsweg"},
-		{8, dtos.Addresses[8], "Voltastraße"},
-		{9, dtos.Addresses[9], "Von-Line-Straße"},
+		{0, dtos.Street[0], "Am Querkamp"},
+		{1, dtos.Street[1], "Langwedeler Straße"},
+		{2, dtos.Street[2], "Riensberger Straße"},
+		{3, dtos.Street[3], "Schaffenrathstraße"},
+		{4, dtos.Street[4], "Schaffhauser Straße"},
+		{5, dtos.Street[5], "Steffensweg"},
+		{6, dtos.Street[6], "Turnerstraße"},
+		{7, dtos.Street[7], "Twiedelftsweg"},
+		{8, dtos.Street[8], "Voltastraße"},
+		{9, dtos.Street[9], "Von-Line-Straße"},
 	})
 }
 
 func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
-	res, dtos := sendRequest(t, "/api/address?search=zwolle")
+	res, dtos := sendGetStreetsRequest(t, "/api/address?search=zwolle")
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 1)
@@ -61,18 +61,25 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 		got   string
 		want  string
 	}{
-		{0, dtos.Addresses[0], "Zwoller Straße"},
+		{0, dtos.Street[0], "Zwoller Straße"},
 	})
 }
 
 func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
-	res, dtos := sendRequest(t, "/api/address?search=not-found")
+	res, dtos := sendGetStreetsRequest(t, "/api/address?search=not-found")
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 0)
 }
 
-func sendRequest(t *testing.T, url string) (*httptest.ResponseRecorder, AddressesDto) {
+//func TestAddressApi_LoadHouseNumbers(t *testing.T) {
+//	res, dtos := sendGetStreetsRequest(t, "/api/address/Langwedeler%20Straße")
+//
+//	verifyResponseHeader(t, res)
+//	verifyAddressesLength(t, dtos, 0)
+//}
+
+func sendGetStreetsRequest(t *testing.T, url string) (*httptest.ResponseRecorder, StreetsDto) {
 	req, _ := http.NewRequest("GET", url, nil)
 	res := httptest.NewRecorder()
 
@@ -97,16 +104,16 @@ func verifyAddresses(t *testing.T, tests []struct {
 	}
 }
 
-func verifyAddressesLength(t *testing.T, dtos AddressesDto, want int) bool {
+func verifyAddressesLength(t *testing.T, dtos StreetsDto, want int) bool {
 	return t.Run("verify body addresses length", func(t *testing.T) {
-		if len(dtos.Addresses) > 10 {
-			t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Addresses), want)
+		if len(dtos.Street) > 10 {
+			t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Street), want)
 		}
 	})
 }
 
-func unmarshalResponse(t *testing.T, res *httptest.ResponseRecorder) AddressesDto {
-	var dtos AddressesDto
+func unmarshalResponse(t *testing.T, res *httptest.ResponseRecorder) StreetsDto {
+	var dtos StreetsDto
 
 	err := json.Unmarshal(res.Body.Bytes(), &dtos)
 
