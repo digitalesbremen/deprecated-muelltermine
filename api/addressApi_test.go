@@ -83,6 +83,15 @@ func TestAddressApi_LoadHouseNumbers(t *testing.T) {
 
 	verifyResponseHeader(t, res)
 	verifyLength(t, dtos.HouseNumber, 3, `GET /api/address/Langwedeler%20Straße length = %d ; want %d`)
+	verifyContent(t, "/api/address/Langwedeler%20Straße", []struct {
+		index int
+		got   string
+		want  string
+	}{
+		{0, dtos.HouseNumber[0], "1"},
+		{1, dtos.HouseNumber[1], "1a"},
+		{2, dtos.HouseNumber[2], "1b"},
+	})
 }
 
 func sendRequest(url string, addresses []loader.Address) *httptest.ResponseRecorder {
