@@ -36,7 +36,6 @@ func NewAddressesApi(addresses []loader.Address, router *mux.Router) *AddressesA
 		Methods("GET")
 	addressLoader.router.
 		HandleFunc("/api/address/", addressLoader.getAllAddressesHandler).
-		Queries("search", "{search:.*}").
 		Methods("GET")
 	addressLoader.router.
 		HandleFunc("/api/address", addressLoader.getAllAddressesHandler).
