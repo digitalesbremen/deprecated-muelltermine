@@ -35,8 +35,8 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
-	verifyStreetsLength(t, dtos, 2)
-	verifyAddresses(t, []struct {
+	verifyLength(t, dtos.Street, 10, `GET /api/address length = %d ; want %d`)
+	verifyStreetNames(t, []struct {
 		index int
 		got   string
 		want  string
@@ -59,8 +59,8 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
-	verifyStreetsLength(t, dtos, 1)
-	verifyAddresses(t, []struct {
+	verifyLength(t, dtos.Street, 1, `GET /api/address length = %d ; want %d`)
+	verifyStreetNames(t, []struct {
 		index int
 		got   string
 		want  string
@@ -74,7 +74,7 @@ func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
-	verifyStreetsLength(t, dtos, 0)
+	verifyLength(t, dtos.Street, 0, `GET /api/address length = %d ; want %d`)
 }
 
 func TestAddressApi_LoadHouseNumbers(t *testing.T) {
@@ -82,7 +82,7 @@ func TestAddressApi_LoadHouseNumbers(t *testing.T) {
 	dtos := unmarshalHouseNumbersDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
-	verifyHouseNumbersLength(t, dtos, 3)
+	verifyLength(t, dtos.HouseNumber, 3, `GET /api/address/Langwedeler%20Straße length = %d ; want %d`)
 }
 
 func sendRequest(url string, addresses []loader.Address) *httptest.ResponseRecorder {
@@ -96,7 +96,7 @@ func sendRequest(url string, addresses []loader.Address) *httptest.ResponseRecor
 	return res
 }
 
-func verifyAddresses(t *testing.T, tests []struct {
+func verifyStreetNames(t *testing.T, tests []struct {
 	index int
 	got   string
 	want  string
@@ -104,23 +104,17 @@ func verifyAddresses(t *testing.T, tests []struct {
 	for _, tt := range tests {
 		name := "GET /api/address [" + strconv.Itoa(tt.index) + "]"
 		t.Run(name, func(t *testing.T) {
-			verifyAddress(t, tt.index, tt.got, tt.want)
+			if tt.want != tt.got {
+				t.Errorf(`GET /api/address [%d] = %s ; want %s`, tt.index, tt.got, tt.want)
+			}
 		})
 	}
 }
 
-func verifyStreetsLength(t *testing.T, dtos StreetsDto, want int) bool {
-	return t.Run("verify body addresses length", func(t *testing.T) {
-		if len(dtos.Street) > 10 {
-			t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.Street), want)
-		}
-	})
-}
-
-func verifyHouseNumbersLength(t *testing.T, dtos HouseNumbersDto, want int) bool {
-	return t.Run("verify body addresses length", func(t *testing.T) {
-		if len(dtos.HouseNumber) > 10 {
-			t.Errorf(`GET /api/address length = %d ; want %d`, len(dtos.HouseNumber), want)
+func verifyLength(t *testing.T, values []string, want int, errorMessage string) {
+	t.Run("verify body addresses length", func(t *testing.T) {
+		if len(values) != want {
+			t.Errorf(errorMessage, len(values), want)
 		}
 	})
 }
@@ -157,10 +151,4 @@ func verifyResponseHeader(t *testing.T, res *httptest.ResponseRecorder) bool {
 			t.Errorf(`GET /api/address header = %s ; want %s`, res.Header().Get("Content-Type"), "application/json")
 		}
 	})
-}
-
-func verifyAddress(t *testing.T, index int, got string, want string) {
-	if want != got {
-		t.Errorf(`GET /api/address [%d] = %s ; want %s`, index, got, want)
-	}
 }
