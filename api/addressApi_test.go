@@ -36,7 +36,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 
 	verifyResponseHeader(t, res)
 	verifyLength(t, dtos.Street, 10, `GET /api/address length = %d ; want %d`)
-	verifyStreetNames(t, []struct {
+	verifyContent(t, "/api/address", []struct {
 		index int
 		got   string
 		want  string
@@ -60,7 +60,7 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 
 	verifyResponseHeader(t, res)
 	verifyLength(t, dtos.Street, 1, `GET /api/address length = %d ; want %d`)
-	verifyStreetNames(t, []struct {
+	verifyContent(t, "/api/address", []struct {
 		index int
 		got   string
 		want  string
@@ -96,16 +96,16 @@ func sendRequest(url string, addresses []loader.Address) *httptest.ResponseRecor
 	return res
 }
 
-func verifyStreetNames(t *testing.T, tests []struct {
+func verifyContent(t *testing.T, url string, tests []struct {
 	index int
 	got   string
 	want  string
 }) {
 	for _, tt := range tests {
-		name := "GET /api/address [" + strconv.Itoa(tt.index) + "]"
+		name := "GET " + url + " [" + strconv.Itoa(tt.index) + "]"
 		t.Run(name, func(t *testing.T) {
 			if tt.want != tt.got {
-				t.Errorf(`GET /api/address [%d] = %s ; want %s`, tt.index, tt.got, tt.want)
+				t.Errorf(`GET %s [%d] = %s ; want %s`, url, tt.index, tt.got, tt.want)
 			}
 		})
 	}
