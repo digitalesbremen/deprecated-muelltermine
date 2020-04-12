@@ -33,24 +33,19 @@ func NewAddressesApi(addresses []loader.Address, router *mux.Router) *AddressesA
 	addressLoader.router.
 		HandleFunc("/api/address", addressLoader.getAllAddressesHandler).
 		Queries("search", "{search:.*}").
-		//Headers("Content-Type", "application/json").
 		Methods("GET")
 	addressLoader.router.
 		HandleFunc("/api/address/", addressLoader.getAllAddressesHandler).
 		Queries("search", "{search:.*}").
-		//Headers("Content-Type", "application/json").
 		Methods("GET")
 	addressLoader.router.
 		HandleFunc("/api/address", addressLoader.getAllAddressesHandler).
-		//Headers("Content-Type", "application/json").
 		Methods("GET")
 	addressLoader.router.
 		HandleFunc("/api/address/{street}", addressLoader.getAddressHandler).
-		//Headers("Content-Type", "application/json").
 		Methods("GET")
 	addressLoader.router.
 		HandleFunc("/api/address/{street}/", addressLoader.getAddressHandler).
-		//Headers("Content-Type", "application/json").
 		Methods("GET")
 
 	return &addressLoader
