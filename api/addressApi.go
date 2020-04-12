@@ -82,6 +82,8 @@ func (a *AddressesApi) getAddressHandler(w http.ResponseWriter, r *http.Request)
 		}
 	}
 
+	w.Header().Add("Content-Type", "application/json")
+
 	_ = json.NewEncoder(w).Encode(houseNumbers)
 }
 
