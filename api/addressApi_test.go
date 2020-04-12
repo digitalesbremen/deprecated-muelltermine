@@ -8,6 +8,8 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+
+	"muelltermine/loader"
 )
 
 var testAddresses = newAddressBuilder().
@@ -29,7 +31,8 @@ var testAddresses = newAddressBuilder().
 	build()
 
 func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
-	res, dtos := sendRequest(t, "/api/address")
+	res := sendRequest("/api/address", testAddresses)
+	dtos := unmarshalResponse(t, res)
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 2)
@@ -52,7 +55,8 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 }
 
 func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
-	res, dtos := sendRequest(t, "/api/address?search=zwolle")
+	res := sendRequest("/api/address?search=zwolle", testAddresses)
+	dtos := unmarshalResponse(t, res)
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 1)
@@ -66,7 +70,8 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 }
 
 func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
-	res, dtos := sendRequest(t, "/api/address?search=not-found")
+	res := sendRequest("/api/address?search=not-found", testAddresses)
+	dtos := unmarshalResponse(t, res)
 
 	verifyResponseHeader(t, res)
 	verifyAddressesLength(t, dtos, 0)
@@ -79,16 +84,15 @@ func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
 //	verifyAddressesLength(t, dtos, 0)
 //}
 
-func sendRequest(t *testing.T, url string) (*httptest.ResponseRecorder, StreetsDto) {
+func sendRequest(url string, addresses []loader.Address) *httptest.ResponseRecorder {
 	req, _ := http.NewRequest("GET", url, nil)
 	res := httptest.NewRecorder()
 
 	router := mux.NewRouter()
-	NewAddressesApi(testAddresses, router)
+	NewAddressesApi(addresses, router)
 	router.ServeHTTP(res, req)
 
-	dtos := unmarshalResponse(t, res)
-	return res, dtos
+	return res
 }
 
 func verifyAddresses(t *testing.T, tests []struct {
