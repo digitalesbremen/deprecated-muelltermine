@@ -35,6 +35,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
+	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.Street, 10, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
 		index int
@@ -59,6 +60,7 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
+	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.Street, 1, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
 		index int
@@ -74,6 +76,7 @@ func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
+	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.Street, 0, `GET /api/address length = %d ; want %d`)
 }
 
@@ -82,6 +85,7 @@ func TestAddressApi_LoadHouseNumbers(t *testing.T) {
 	dtos := unmarshalHouseNumbersDtoResponse(t, res)
 
 	verifyResponseHeader(t, res)
+	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.HouseNumber, 3, `GET /api/address/Langwedeler%20Straße length = %d ; want %d`)
 	verifyContent(t, "/api/address/Langwedeler%20Straße", []struct {
 		index int
@@ -154,10 +158,18 @@ func unmarshalHouseNumbersDtoResponse(t *testing.T, res *httptest.ResponseRecord
 	return dtos
 }
 
-func verifyResponseHeader(t *testing.T, res *httptest.ResponseRecorder) bool {
-	return t.Run("verify response header", func(t *testing.T) {
+func verifyResponseHeader(t *testing.T, res *httptest.ResponseRecorder) {
+	t.Run("verify response header", func(t *testing.T) {
 		if res.Header().Get("Content-Type") != "application/json" {
 			t.Errorf(`GET /api/address header = %s ; want %s`, res.Header().Get("Content-Type"), "application/json")
+		}
+	})
+}
+
+func verifyStatusCode(t *testing.T, res *httptest.ResponseRecorder, want int) {
+	t.Run("verify http status code", func(t *testing.T) {
+		if res.Code != want {
+			t.Errorf(`GET /api/address code = %d ; want %d`, res.Code, want)
 		}
 	})
 }
