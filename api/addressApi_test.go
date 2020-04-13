@@ -34,7 +34,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 	res := sendRequest("/api/address", testAddresses)
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
-	verifyResponseHeader(t, res)
+	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.Street, 10, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
@@ -59,7 +59,7 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 	res := sendRequest("/api/address?search=zwolle", testAddresses)
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
-	verifyResponseHeader(t, res)
+	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.Street, 1, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
@@ -75,7 +75,7 @@ func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
 	res := sendRequest("/api/address?search=not-found", testAddresses)
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
-	verifyResponseHeader(t, res)
+	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.Street, 0, `GET /api/address length = %d ; want %d`)
 }
@@ -84,7 +84,7 @@ func TestAddressApi_LoadHouseNumbers(t *testing.T) {
 	res := sendRequest("/api/address/Langwedeler%20Straße", testAddresses)
 	dtos := unmarshalHouseNumbersDtoResponse(t, res)
 
-	verifyResponseHeader(t, res)
+	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
 	verifyLength(t, dtos.HouseNumber, 3, `GET /api/address/Langwedeler%20Straße length = %d ; want %d`)
 	verifyContent(t, "/api/address/Langwedeler%20Straße", []struct {
@@ -101,6 +101,7 @@ func TestAddressApi_LoadHouseNumbers(t *testing.T) {
 func TestAddressApi_LoadHouseNumbersWithStreetNotExists(t *testing.T) {
 	res := sendRequest("/api/address/NOT%20EXISTING", testAddresses)
 
+	verifyContentTypeHeader(t, res, "text/html")
 	verifyStatusCode(t, res, 404)
 }
 
@@ -164,10 +165,10 @@ func unmarshalHouseNumbersDtoResponse(t *testing.T, res *httptest.ResponseRecord
 	return dtos
 }
 
-func verifyResponseHeader(t *testing.T, res *httptest.ResponseRecorder) {
+func verifyContentTypeHeader(t *testing.T, res *httptest.ResponseRecorder, contentType string) {
 	t.Run("verify response header", func(t *testing.T) {
-		if res.Header().Get("Content-Type") != "application/json" {
-			t.Errorf(`GET /api/address header = %s ; want %s`, res.Header().Get("Content-Type"), "application/json")
+		if res.Header().Get("Content-Type") != contentType {
+			t.Errorf(`GET /api/address header = %s ; want %s`, res.Header().Get("Content-Type"), contentType)
 		}
 	})
 }

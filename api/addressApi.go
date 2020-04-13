@@ -88,6 +88,7 @@ func (a *AddressesApi) getHouseNumbersHandler(w http.ResponseWriter, r *http.Req
 
 	if len(houseNumbers.HouseNumber) == 0 {
 		w.WriteHeader(http.StatusNotFound)
+		w.Header().Add("Content-Type", "text/html")
 		page.Write404(w, r.Method+" "+r.URL.Path)
 	} else {
 		w.Header().Add("Content-Type", "application/json")
