@@ -36,7 +36,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 
 	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
-	verifyLength(t, dtos.Street, 10, `GET /api/address length = %d ; want %d`)
+	verifyLength(t, dtos.Street, 11, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
 		index int
 		got   string
@@ -52,6 +52,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 		{7, dtos.Street[7], "Twiedelftsweg"},
 		{8, dtos.Street[8], "Voltastraße"},
 		{9, dtos.Street[9], "Von-Line-Straße"},
+		{9, dtos.Street[10], "Zwoller Straße"},
 	})
 }
 

@@ -60,10 +60,6 @@ func (a *AddressesApi) getStreetsHandler(w http.ResponseWriter, r *http.Request)
 		if containsIgnoreCase(entry.Street, searchValue) && !contains(addresses.Street, entry.Street) {
 			addresses.Street = append(addresses.Street, entry.Street)
 		}
-
-		if len(addresses.Street) >= 10 {
-			break
-		}
 	}
 
 	w.Header().Add("Content-Type", "application/json")
