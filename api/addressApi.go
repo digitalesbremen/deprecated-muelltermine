@@ -31,26 +31,26 @@ func NewAddressesApi(addresses []loader.Address, router *mux.Router) *AddressesA
 	}
 
 	addressLoader.router.
-		HandleFunc("/api/address", addressLoader.getAllAddressesHandler).
+		HandleFunc("/api/address", addressLoader.getStreetsHandler).
 		Queries("search", "{search:.*}").
 		Methods("GET")
 	addressLoader.router.
-		HandleFunc("/api/address/", addressLoader.getAllAddressesHandler).
+		HandleFunc("/api/address/", addressLoader.getStreetsHandler).
 		Methods("GET")
 	addressLoader.router.
-		HandleFunc("/api/address", addressLoader.getAllAddressesHandler).
+		HandleFunc("/api/address", addressLoader.getStreetsHandler).
 		Methods("GET")
 	addressLoader.router.
-		HandleFunc("/api/address/{street}", addressLoader.getAddressHandler).
+		HandleFunc("/api/address/{street}", addressLoader.getHouseNumbersHandler).
 		Methods("GET")
 	addressLoader.router.
-		HandleFunc("/api/address/{street}/", addressLoader.getAddressHandler).
+		HandleFunc("/api/address/{street}/", addressLoader.getHouseNumbersHandler).
 		Methods("GET")
 
 	return &addressLoader
 }
 
-func (a *AddressesApi) getAllAddressesHandler(w http.ResponseWriter, r *http.Request) {
+func (a *AddressesApi) getStreetsHandler(w http.ResponseWriter, r *http.Request) {
 	searchValue := mux.Vars(r)["search"]
 
 	var addresses StreetsDto
@@ -74,7 +74,7 @@ func (a *AddressesApi) getAllAddressesHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (a *AddressesApi) getAddressHandler(w http.ResponseWriter, r *http.Request) {
+func (a *AddressesApi) getHouseNumbersHandler(w http.ResponseWriter, r *http.Request) {
 	street := mux.Vars(r)["street"]
 
 	var houseNumbers HouseNumbersDto
@@ -85,9 +85,14 @@ func (a *AddressesApi) getAddressHandler(w http.ResponseWriter, r *http.Request)
 		}
 	}
 
-	w.Header().Add("Content-Type", "application/json")
+	if len(houseNumbers.HouseNumber) == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		// TODO return a html error page?
+	} else {
+		w.Header().Add("Content-Type", "application/json")
 
-	_ = json.NewEncoder(w).Encode(houseNumbers)
+		_ = json.NewEncoder(w).Encode(houseNumbers)
+	}
 }
 
 func contains(s []string, e string) bool {

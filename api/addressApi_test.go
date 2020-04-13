@@ -98,6 +98,12 @@ func TestAddressApi_LoadHouseNumbers(t *testing.T) {
 	})
 }
 
+func TestAddressApi_LoadHouseNumbersWithStreetNotExists(t *testing.T) {
+	res := sendRequest("/api/address/NOT%20EXISTING", testAddresses)
+
+	verifyStatusCode(t, res, 404)
+}
+
 func sendRequest(url string, addresses []loader.Address) *httptest.ResponseRecorder {
 	req, _ := http.NewRequest("GET", url, nil)
 	res := httptest.NewRecorder()
