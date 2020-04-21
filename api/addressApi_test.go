@@ -34,7 +34,7 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 	res := sendRequest("/api/address", testAddresses)
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
-	verifyContentTypeHeader(t, res, "application/json")
+	verifyContentTypeHeader(t, res, "application/hal+json")
 	verifyStatusCode(t, res, 200)
 	verifyStreetsLength(t, dtos.Streets, 11, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
@@ -60,7 +60,7 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 	res := sendRequest("/api/address?search=zwolle", testAddresses)
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
-	verifyContentTypeHeader(t, res, "application/json")
+	verifyContentTypeHeader(t, res, "application/hal+json")
 	verifyStatusCode(t, res, 200)
 	verifyStreetsLength(t, dtos.Streets, 1, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
@@ -76,7 +76,7 @@ func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
 	res := sendRequest("/api/address?search=not-found", testAddresses)
 	dtos := unmarshalStreetsDtoResponse(t, res)
 
-	verifyContentTypeHeader(t, res, "application/json")
+	verifyContentTypeHeader(t, res, "application/hal+json")
 	verifyStatusCode(t, res, 200)
 	verifyStreetsLength(t, dtos.Streets, 0, `GET /api/address length = %d ; want %d`)
 }

@@ -97,7 +97,7 @@ func (a *AddressesApi) getStreetsHandler(w http.ResponseWriter, r *http.Request)
 		}
 	}
 
-	w.Header().Add("Content-Type", "application/json")
+	w.Header().Add("Content-Type", "application/hal+json")
 
 	if len(streetsDto.Streets) == 0 {
 		_, _ = fmt.Fprint(w, `{"streets":[]}`)
