@@ -13,7 +13,22 @@ import (
 )
 
 type StreetsDto struct {
-	Street []string `json:"streets"`
+	Streets []StreetDto `json:"streets"`
+	Links   LinksDto    `json:"_links,omitempty"`
+}
+
+type StreetDto struct {
+	StreetName string   `json:"streetName"`
+	Links      LinksDto `json:"_links,omitempty"`
+}
+
+type LinksDto struct {
+	Self LinkDto `json:"self,omitempty"`
+}
+
+type LinkDto struct {
+	Href      string `json:"href"`
+	Templated bool   `json:"templated,omitempty"`
 }
 
 type HouseNumbersDto struct {
@@ -53,21 +68,41 @@ func NewAddressesApi(addresses []loader.Address, router *mux.Router) *AddressesA
 
 func (a *AddressesApi) getStreetsHandler(w http.ResponseWriter, r *http.Request) {
 	searchValue := mux.Vars(r)["search"]
+	requestUrl := r.URL.Path
 
-	var addresses StreetsDto
+	streetsDto := StreetsDto{
+		Links: LinksDto{
+			Self: LinkDto{
+				Href:      requestUrl + "{?search}",
+				Templated: true,
+			},
+		},
+	}
 
 	for _, entry := range a.addresses {
-		if containsIgnoreCase(entry.Street, searchValue) && !contains(addresses.Street, entry.Street) {
-			addresses.Street = append(addresses.Street, entry.Street)
+		var streetNames []string
+		for _, street := range streetsDto.Streets {
+			streetNames = append(streetNames, street.StreetName)
+		}
+
+		if containsIgnoreCase(entry.Street, searchValue) && !contains(streetNames, entry.Street) {
+			streetsDto.Streets = append(streetsDto.Streets, StreetDto{
+				StreetName: entry.Street,
+				Links: LinksDto{
+					Self: LinkDto{
+						Href: requestUrl + "/" + entry.Street,
+					},
+				},
+			})
 		}
 	}
 
 	w.Header().Add("Content-Type", "application/json")
 
-	if len(addresses.Street) == 0 {
-		_, _ = fmt.Fprint(w, `{"addresses":[]}`)
+	if len(streetsDto.Streets) == 0 {
+		_, _ = fmt.Fprint(w, `{"streets":[]}`)
 	} else {
-		_ = json.NewEncoder(w).Encode(addresses)
+		_ = json.NewEncoder(w).Encode(streetsDto)
 	}
 }
 

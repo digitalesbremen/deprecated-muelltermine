@@ -36,23 +36,23 @@ func TestAddressApi_LoadAddressesWithoutQueryParameter(t *testing.T) {
 
 	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
-	verifyLength(t, dtos.Street, 11, `GET /api/address length = %d ; want %d`)
+	verifyStreetsLength(t, dtos.Streets, 11, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
 		index int
 		got   string
 		want  string
 	}{
-		{0, dtos.Street[0], "Am Querkamp"},
-		{1, dtos.Street[1], "Langwedeler Straße"},
-		{2, dtos.Street[2], "Riensberger Straße"},
-		{3, dtos.Street[3], "Schaffenrathstraße"},
-		{4, dtos.Street[4], "Schaffhauser Straße"},
-		{5, dtos.Street[5], "Steffensweg"},
-		{6, dtos.Street[6], "Turnerstraße"},
-		{7, dtos.Street[7], "Twiedelftsweg"},
-		{8, dtos.Street[8], "Voltastraße"},
-		{9, dtos.Street[9], "Von-Line-Straße"},
-		{9, dtos.Street[10], "Zwoller Straße"},
+		{0, dtos.Streets[0].StreetName, "Am Querkamp"},
+		{1, dtos.Streets[1].StreetName, "Langwedeler Straße"},
+		{2, dtos.Streets[2].StreetName, "Riensberger Straße"},
+		{3, dtos.Streets[3].StreetName, "Schaffenrathstraße"},
+		{4, dtos.Streets[4].StreetName, "Schaffhauser Straße"},
+		{5, dtos.Streets[5].StreetName, "Steffensweg"},
+		{6, dtos.Streets[6].StreetName, "Turnerstraße"},
+		{7, dtos.Streets[7].StreetName, "Twiedelftsweg"},
+		{8, dtos.Streets[8].StreetName, "Voltastraße"},
+		{9, dtos.Streets[9].StreetName, "Von-Line-Straße"},
+		{9, dtos.Streets[10].StreetName, "Zwoller Straße"},
 	})
 }
 
@@ -62,13 +62,13 @@ func TestAddressApi_LoadAddressesWithQueryParameter(t *testing.T) {
 
 	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
-	verifyLength(t, dtos.Street, 1, `GET /api/address length = %d ; want %d`)
+	verifyStreetsLength(t, dtos.Streets, 1, `GET /api/address length = %d ; want %d`)
 	verifyContent(t, "/api/address", []struct {
 		index int
 		got   string
 		want  string
 	}{
-		{0, dtos.Street[0], "Zwoller Straße"},
+		{0, dtos.Streets[0].StreetName, "Zwoller Straße"},
 	})
 }
 
@@ -78,7 +78,7 @@ func TestAddressApi_LoadAddressesWithQueryParameterNotFound(t *testing.T) {
 
 	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
-	verifyLength(t, dtos.Street, 0, `GET /api/address length = %d ; want %d`)
+	verifyStreetsLength(t, dtos.Streets, 0, `GET /api/address length = %d ; want %d`)
 }
 
 func TestAddressApi_LoadHouseNumbers(t *testing.T) {
@@ -87,7 +87,7 @@ func TestAddressApi_LoadHouseNumbers(t *testing.T) {
 
 	verifyContentTypeHeader(t, res, "application/json")
 	verifyStatusCode(t, res, 200)
-	verifyLength(t, dtos.HouseNumber, 3, `GET /api/address/Langwedeler%20Straße length = %d ; want %d`)
+	verifyHouseNumberLength(t, dtos.HouseNumber, 3, `GET /api/address/Langwedeler%20Straße length = %d ; want %d`)
 	verifyContent(t, "/api/address/Langwedeler%20Straße", []struct {
 		index int
 		got   string
@@ -132,8 +132,16 @@ func verifyContent(t *testing.T, url string, tests []struct {
 	}
 }
 
-func verifyLength(t *testing.T, values []string, want int, errorMessage string) {
-	t.Run("verify body addresses length", func(t *testing.T) {
+func verifyStreetsLength(t *testing.T, values []StreetDto, want int, errorMessage string) {
+	t.Run("verify body streets length", func(t *testing.T) {
+		if len(values) != want {
+			t.Errorf(errorMessage, len(values), want)
+		}
+	})
+}
+
+func verifyHouseNumberLength(t *testing.T, values []string, want int, errorMessage string) {
+	t.Run("verify body house number length", func(t *testing.T) {
 		if len(values) != want {
 			t.Errorf(errorMessage, len(values), want)
 		}
